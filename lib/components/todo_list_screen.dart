@@ -21,7 +21,7 @@ class TodoListScreenState extends State<TodoListScreen>
     with TickerProviderStateMixin {
   GlobalKey<TodoListScreenState> myKey = GlobalKey();
   List<Meal> meal = [];
-  List<Meal> shoppingCart = [];
+  List<(Meal,int)> shoppingCart = [];
   List<int> mealAmount = [];
   List<Meal> filteredItems = [];
   TextEditingController _searchController = TextEditingController();
@@ -75,8 +75,9 @@ class TodoListScreenState extends State<TodoListScreen>
   void calculateTotalCost() {
     double total = 0.0;
 
-    for (int i= 0;i<shoppingCart.length;i++) {
-      total += shoppingCart[i].price * mealAmount[i];
+    for (var item in shoppingCart) {
+      total += item.$1.price * item.$2;
+      print(item.$1);
     }
 
     setState(() {
@@ -174,7 +175,7 @@ class TodoListScreenState extends State<TodoListScreen>
 
   addtoShoppingCart(Meal meal) {
     setState(() {
-      if (this.shoppingCart.any((element) => element.name == meal.name)) {
+      if (this.shoppingCart.any((element) => element.$1.name == meal.name)) {
         ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
           content: Align(
             child: Text('Meal has already been added!!! '),
@@ -190,8 +191,8 @@ class TodoListScreenState extends State<TodoListScreen>
         ));
       } else {
         {
-          this.shoppingCart.add(meal);
-          this.mealAmount.add(0);
+          this.shoppingCart.add((meal,0));
+
         }
       }
     });
@@ -199,9 +200,8 @@ class TodoListScreenState extends State<TodoListScreen>
 
   void removeMeal(int id) {
     setState(() {
-      int removeID = this.shoppingCart.indexWhere((element) => element.id == id);
-      this.shoppingCart.removeWhere((meal) => meal.id == id);
-      this.mealAmount.removeAt(removeID);
+      this.shoppingCart.removeWhere((meal) => meal.$1.id == id);
+
     });
   }
 
@@ -639,10 +639,10 @@ class TodoListScreenState extends State<TodoListScreen>
                                                 return MealListItem(
                                                   shoppingCart[index],
                                                   onRemove: () {
+                                                    print("ID: ");
+                                                    print(index);
                                                     removeMeal(
-                                                        shoppingCart[index]
-                                                            .id
-                                                            .toInt());
+                                                        shoppingCart[index].$1.id.toInt());
                                                     calculateTotalCost();
                                                   },
                                                   onPriceAmountChanged:
@@ -650,7 +650,7 @@ class TodoListScreenState extends State<TodoListScreen>
                                                           int amount) {
                                                     // Update the price and amount in the shopping cart
                                                     // Recalculate the total cost
-                                                    mealAmount[index] = amount;
+                                                        shoppingCart[index] = (shoppingCart[index].$1,amount);
                                                     calculateTotalCost();
                                                   },
                                                 );
@@ -719,7 +719,135 @@ class TodoListScreenState extends State<TodoListScreen>
                                             overflow: TextOverflow.ellipsis,
                                           ))
                                     ],
-                                  )
+                                  ),
+                                  Row(mainAxisAlignment: MainAxisAlignment.end
+                                    ,children: [
+
+                                    Container(
+
+                                        width: 250,
+                                        height: 33,
+                                        color: Color.fromARGB(255, 9, 173, 170),
+                                        margin: EdgeInsets.only(left: 0, bottom: 1,top:55),
+                                        child: SizedBox(
+                                            child: ElevatedButton.icon(
+                                              icon: Icon(Icons.add),
+                                              style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                  Color.fromARGB(255,198,83,56),
+                                                  shape: const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                      BorderRadius.all(Radius.zero))),
+                                              onPressed: () {},
+                                              label: Text("Empty Cart ",style: TextStyle(fontWeight: FontWeight.bold)),
+                                            )))
+                                  ],),
+                                  Row(
+
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [ Container(
+
+                                      width: 130,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.message),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255,76,76,77),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("ADD NOTE",style: TextStyle(fontWeight: FontWeight.bold),),
+                                          ))), Container(
+
+                                      width: 130,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.discount),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255, 9, 173, 170),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("ADD FEE OR DISCOUNT",style: TextStyle(fontWeight: FontWeight.bold)),
+                                          ))), Container(
+
+                                      width: 130,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.receipt),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255, 9, 173, 170),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("APPLY COUPON",style: TextStyle(fontWeight: FontWeight.bold)),
+                                          ))), Container(
+
+                                      width: 130,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.local_shipping),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255, 9, 173, 170),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("SHIPPING",style: TextStyle(fontWeight: FontWeight.bold)),
+                                          ))),Container(
+
+                                      width: 130,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.shopping_cart),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255,225,152,20),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("SUSPEND & SAVE CART",style: TextStyle(fontWeight: FontWeight.bold)),
+                                          ))),Container(
+
+                                      width: 250,
+                                      height: 100,
+                                      color: Color.fromARGB(255, 9, 173, 170),
+                                      margin: EdgeInsets.only(left: 0, bottom: 1,top:20),
+                                      child: SizedBox(
+                                          child: ElevatedButton.icon(
+                                            icon: Icon(Icons.payment),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                Color.fromARGB(255,160,166,1),
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(Radius.zero))),
+                                            onPressed: () {},
+                                            label: Text("PAY",style: TextStyle(fontWeight: FontWeight.bold)),
+                                          )))],),
                                 ],)
 
                               )
