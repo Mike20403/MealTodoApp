@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterproject/modals/meal.dart';
 
 class MealListItem extends StatefulWidget {
-  Meal meal;
+  (Meal,int) meal;
   Function(double price,int amount) onPriceAmountChanged;
   MealListItem(this.meal, {required this.onRemove, required this.onPriceAmountChanged});
   final void Function() onRemove;
@@ -17,7 +17,7 @@ class _MealListItemState extends State<MealListItem> {
 
   @override
   Widget build(BuildContext context) {
-
+    amount = widget.meal.$2;
     // Full screen width and height
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -40,7 +40,7 @@ class _MealListItemState extends State<MealListItem> {
                     },
                   )),
               Image.network(
-                widget.meal!.urlImage,
+                widget.meal!.$1.urlImage,
                 width: 80,
                 height: 50,
                 fit: BoxFit.fill,
@@ -51,7 +51,7 @@ class _MealListItemState extends State<MealListItem> {
           title: Wrap(
               spacing: 8.0, // gap between adjacent chips
               runSpacing: 4.0,
-            children: [ Text(widget.meal!.name, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16*height*width*0.0000005)),],
+            children: [ Text(widget.meal!.$1.name, style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16*height*width*0.0000005)),],
 
 
             // margin: EdgeInsets.only(left: 20),
@@ -74,7 +74,7 @@ class _MealListItemState extends State<MealListItem> {
                           if (amount> 0) {
                             setState(() {
                              amount--;
-                             this.widget.onPriceAmountChanged(this.widget.meal.price,amount);
+                             this.widget.onPriceAmountChanged(this.widget.meal.$1.price,amount);
                             });
                           }
                         },
@@ -101,8 +101,9 @@ class _MealListItemState extends State<MealListItem> {
                       child: InkWell(
                         onTap: () {
                           setState(() {
-                            if (amount < this.widget.meal!.amount){
+                            if (amount < this.widget.meal!.$1.amount){
                               amount++;
+                              this.widget.onPriceAmountChanged(this.widget.meal.$1.price,amount);
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
                                 content: Align(child:Text('Amount exceeded!!!',style: TextStyle(color: Colors.white),),alignment: Alignment.center,),
@@ -115,7 +116,7 @@ class _MealListItemState extends State<MealListItem> {
                                     left: 20),
                               ));
                             }
-                           this.widget.onPriceAmountChanged(this.widget.meal.price,amount);
+
                           });
                         },
                         splashColor: Colors.white,
@@ -132,7 +133,7 @@ class _MealListItemState extends State<MealListItem> {
                 Container(
                   width: 100,
                   alignment: Alignment.center,
-                  child: Text('\$' + this.widget.meal!.price.toString(),
+                  child: Text('\$' + this.widget.meal!.$1.price.toString(),
                       style: TextStyle(
                           color: Colors.grey, fontWeight: FontWeight.bold)),
                 ),
@@ -140,7 +141,7 @@ class _MealListItemState extends State<MealListItem> {
                   width: 100,
                   alignment: Alignment.center,
                   child: Text(
-                      '\$${(widget.meal!.price * amount).toStringAsFixed(2)}',
+                      '\$${(widget.meal!.$1.price * widget.meal!.$2).toStringAsFixed(2)}',
                       style: const TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
