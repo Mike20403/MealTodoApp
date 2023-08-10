@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "387727179417",
+    "firebase_url": "https://mealtodolist-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "mealtodolist",
+    "storage_bucket": "mealtodolist.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:387727179417:android:afa11de250a23b29a8c208",
+        "android_client_info": {
+          "package_name": "com.example.flutterproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "387727179417-k5mvku2ehhqa51cl7v80ulbjjpnnigpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLd7Xay-nWknxhcDO5mGLOm9kEDjQVfMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "387727179417-k5mvku2ehhqa51cl7v80ulbjjpnnigpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
